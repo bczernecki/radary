@@ -1,10 +1,24 @@
 #!/bin/bash
 
-for i in *.cmax
-do
+# pliki wymagajace przetworzenia powinny
+# znajdowac sie w katalogu 'dane'
 
+pliki=`ls dane/*cmax`
+
+for i in $pliki
+
+do
 echo $i
-numery=`grep -an BLOB  $i |  sed 's/:/ /g'| awk '{print $1}' `
+
+cp $i tmp.cmax # tworzenie pliku tymczasowego
+
+time ./RainBlob -expand tmp.cmax # 'rozpakowanie' bloba z XML do formy binarnej i sprawdzenie czasu operacji
+
+ echo -e "jestem po RainBlobie"
+
+sleep 3
+
+numery=`grep -an BLOB  tmp.cmax |  sed 's/:/ /g'| awk '{print $1}' `
 
 
 nr1=`echo $numery | awk '{print $1}'`
@@ -18,9 +32,11 @@ nr2=$[$nr2-1]
 nr4=$[$nr4-1]
 
 
+fileout=`echo $i | tr '/' '_' | sed 's/dane_//g' `
+echo $fileout
 
-sed "$nr1,$nr2 !d" $i > blob1.$i
-sed "$nr3,$nr4 !d" $i > blob2.$i
+sed "$nr1,$nr2 !d" $i > blob1.$fileout
+sed "$nr3,$nr4 !d" $i > blob2.$fileout
 
 done
 
