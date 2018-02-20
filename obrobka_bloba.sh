@@ -35,8 +35,8 @@ nr4=$[$nr4-1]
 fileout=`echo $i | tr '/' '_' | sed 's/dane_//g' `
 echo $fileout
 
-sed "$nr1,$nr2 !d" $i > blob1.$fileout
-sed "$nr3,$nr4 !d" $i > blob2.$fileout
+sed "$nr1,$nr2 !d" tmp.cmax > blob1.$fileout
+sed "$nr3,$nr4 !d" tmp.cmax > blob2.$fileout
 
 done
 
