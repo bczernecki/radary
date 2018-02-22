@@ -2,7 +2,7 @@ library(dplyr)
 library(raster)
 library(fields)
 
-file <- "blob1.2017100519200000dBZ.cmax"
+#file <- "blob1.2017100519200000dBZ.cmax"
 file <- "blob2.2017100519200000dBZ.cmax"
 # a <-  readBin(file, numeric(), 810000) 
 # a <-  readBin(file, numeric(), 810000) 
@@ -15,8 +15,8 @@ a <- a[-length(a)]
 dxdy <- sqrt(length(a))
 a[which(a==0)] <- NA
 #b <- matrix(a, ncol=450, nrow=450, byrow = F)
-b <- matrix(a, ncol=dxdy, nrow=dxdy, byrow = F)
-# b <- matrix(rep(a, each=2), ncol=dxdy*2, nrow=dxdy, byrow = F) to jest dla maski jakosci
+#b <- matrix(a, ncol=dxdy, nrow=dxdy, byrow = F)
+ b <- matrix(rep(a, each=2), ncol=dxdy*2, nrow=dxdy, byrow = F) #to jest dla maski jakosci
 str(b)
 mindbz = -31.5;
 maxdbz = 95.5;
@@ -25,7 +25,16 @@ b[which(b<0)] <- NA
 
 r <- raster(x=t(b),xmn=11.812900,xmx=25.157600, ymn=48.133400, ymx=56.186500,
             crs=CRS("+proj=aeqd +lat_0=52.346900 +lon_0=19.092600 +ellps=sphere")) ## stworzenie obiektu rastrowego
+r <- raster(x=t(b), xmn=1315006.01,xmx=2800531.22, ymn=6129076.60, ymx=7595632.47)
+proj4string(r) <- CRS("+init=epsg:4326")
 plot(r)
+
+library(rgdal)
+pl <- readOGR(dsn="/home/bartosz/R/skryptydoR/gis/", layer ="POL_adm1")
+pl2 <- spTransform(pl, CRS("+init=epsg:3857"))
+plot(r)
+plot(pl,add=T)
+
 map('world',add=T)
 #res(r) <- 0.25
 #proj4string(r) <- CRS('+proj=longlat +ellps=sphere +no_defs')
